@@ -50,18 +50,51 @@ def get_review():
         return msg, 200
     
 
-
 @app.route("/song", methods=["POST","GET"])
 def get_song():
-    top = request.args.get('top', default=-1, type=int)
-    # use url filter as top and validate the top
-    pass
+    if request.method == "GET":
+        top = request.args.get('top', default=-1, type=int)
+        songs_status, all_songs = songs.get_all_songs()
+        if songs_status != True:
+            return all_songs, 400
+        if top!=-1 :
+            if top<=0:
+                return "Send a valid top value", 400
+            top_status, top_songs =  songs.top_songs(all_songs, top) 
+            if top_status != True:
+                return top_songs, 400
+            return json.dumps(top_songs), 200
+        return json.dumps(all_songs), 200
+    elif request.method == "POST":
+        data = request.json
+        add_song_status, msg = songs.add_song(data)
+        if add_song_status != True:
+            return msg,400
+        return msg,200
+    
 
 
 @app.route("/artist", methods=["POST","GET"])
 def get_artist():
-    # use url filter as top and validate the top
-    pass
+    if request.method == "GET":
+        top = request.args.get('top', default=-1, type=int)
+        artist_status, all_artist = artist.get_all_artist()
+        if artist_status != True:
+            return all_artist, 400
+        if top!=-1 :
+            if top<=0:
+                return "Send a valid top value", 400
+            top_status, top_songs =  artist.top_artist(all_artist, top) 
+            if top_status != True:
+                return top_songs, 400
+            return json.dumps(top_songs), 200
+        return json.dumps(all_artist), 200
+    elif request.method == "POST":
+        data = request.json
+        add_song_status, msg = artist.add_artist(data)
+        if add_song_status != True:
+            return msg,400
+        return msg,200
 
 
 if __name__ == '__main__':
