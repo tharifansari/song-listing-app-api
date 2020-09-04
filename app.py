@@ -63,7 +63,11 @@ def get_song():
             top_status, top_songs =  songs.top_songs(all_songs, top) 
             if top_status != True:
                 return top_songs, 400
-            return json.dumps(top_songs), 200
+            top_song_list = []
+            for d in all_songs:
+                if d['id'] in top_songs:
+                    top_song_list.append(d)
+            return json.dumps(top_song_list), 200
         return json.dumps(all_songs), 200
     elif request.method == "POST":
         data = request.json
@@ -87,7 +91,11 @@ def get_artist():
             top_status, top_songs =  artist.top_artist(all_artist, top) 
             if top_status != True:
                 return top_songs, 400
-            return json.dumps(top_songs), 200
+            top_artist_list = []
+            for d in all_artist:
+                if d['id'] in top_songs:
+                    top_artist_list.append(d)
+            return json.dumps(top_artist_list), 200
         return json.dumps(all_artist), 200
     elif request.method == "POST":
         data = request.json
@@ -96,6 +104,21 @@ def get_artist():
             return msg,400
         return msg,200
 
+@app.route("/artist/<song_id>", methods=["GET"])
+def artiist_for_id(song_id):
+    artist_ls = artist.get_artist_song(song_id)
+    artist_dc = {}
+    for artst in artist_ls:
+        artist_dc[artst] = artist.get_artist_name(artst)
+    return json.dumps(artist_dc)
+
+@app.route("/song/<artist_id>",methods=["GET"])
+def songs_for_artist(artist_id):
+    songs_ls = artist.get_song_artist(artist_id)
+    song_dc = {}
+    for sng in songs_ls:
+        song_dc[sng] = songs.get_song_name(sng)
+    return json.dumps(song_dc)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=PORT, debug=True)

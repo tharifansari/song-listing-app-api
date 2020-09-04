@@ -48,6 +48,16 @@ def add_artist(data):
         return True, "Successfully added an artist"
     return False, result['errors'][0]["message"]
 
+def get_artist_name(artist_id):
+    query="""
+    {
+        artist(where: {id: {_eq: "$a_id$"}}){
+            name
+        }
+    }
+    """.replace("$a_id$",artist_id)
+    return json.loads(graphQL_client.execute(query))['data']['artist'][0]['name']
+
 
 def get_song_artist(artist_id):
     query=""" 
@@ -63,14 +73,31 @@ def get_song_artist(artist_id):
         songs_list.append(song['song_id'])
     return songs_list
 
+
+def get_artist_song(song_id):
+    query=""" 
+    {
+        song_artist(where: {song_id: {_eq: "$a_id$"}}) {
+            artist_id
+        }
+    }
+    """.replace("$a_id$",song_id)
+    result = json.loads(graphQL_client.execute(query))['data']['song_artist']
+    artist_list = []
+    for song in result:
+        artist_list.append(song['artist_id'])
+    return artist_list
+
+
 def get_rating_for_songs(song_id):
     query="""
         {
-            rating(where:{song_id:{_eq:"s_id"}}){
+            rating(where:{song_id:{_in:$s_id$}}){
                 rating
             }
         }
     """.replace("$s_id$",json.dumps(song_id))
+    # print(query)
     result = json.loads(graphQL_client.execute(query))['data']['rating']
     rating_list = []
     for ratng in result:
@@ -89,11 +116,12 @@ def top_artist(songs, top):
         for each_artst in all_artist:
             songs_ls = get_song_artist(each_artst['id'])
             rating_dict[each_artst['id']] = get_rating_for_songs(songs_ls)
-        
+        # print(rating_dict)
         rating_average = {}
         for artst in rating_dict:
             rating_average[artst] = np.mean(rating_dict[artst])
-        print(rating_average)
+        # print(rating_average)
         top_artist_keys = nlargest(top, rating_average, key = rating_average.get) 
+        # print(top_artist_keys)
         return True, top_artist_keys
     return False, all_artist

@@ -94,3 +94,14 @@ def add_song(data):
         return True, "Successfully added a song"
         # add entry to song_artist table 
     return False, result['errors'][0]["message"]
+
+
+def get_song_name(song_id):
+    query="""
+    {
+        songs(where: {id: {_eq: "$a_id$"}}){
+            name
+        }
+    }
+    """.replace("$a_id$",song_id)
+    return json.loads(graphQL_client.execute(query))['data']['songs'][0]['name']
