@@ -11,7 +11,8 @@ PORT = 8000
 
 @app.route("/signup", methods=["POST"])
 def signup():
-    data = request.json
+    data = json.loads(request.data)
+    print(data)
     user_signup_status, msg =  login.sign_up(data)    
     if user_signup_status != True:
         return msg, 400
@@ -22,9 +23,10 @@ def signup():
 
 @app.route("/login", methods=["GET"])
 def user_login():
-    data = request.json
+    data = json.loads(request.data)
+    # print(data)
     user_login_status, msg =  login.validate_login(data)
-    print(user_login_status)
+    # print(user_login_status)
     if user_login_status != True:
         return msg, 400
     return msg['id'], 200

@@ -33,7 +33,7 @@ def get_userid_password(mail):
 
 
 def validate_login(data):
-    
+    # print(data)
     mail = data['mail']
     password = make_md5_hash(data['password'])
 
@@ -41,7 +41,7 @@ def validate_login(data):
 
     # validate invalid email
     if userid_password == []:
-        return False, "E-Mail doesn't belong to a user"
+        return False, "Email doesn't belong to a user"
     
     user_password = userid_password[0]['password']
     user_details = {
@@ -84,6 +84,6 @@ def sign_up(data):
         '''.replace('$email$', mail).replace('$uid$', str(user_id))
     
     query = query.replace('$password$', password).replace('$name$', name)
-    json.loads(graphQL_client.execute(query))
+    print(json.loads(graphQL_client.execute(query)))
     
     return True, user_id
