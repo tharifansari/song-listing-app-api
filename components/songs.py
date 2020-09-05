@@ -105,3 +105,14 @@ def get_song_name(song_id):
     }
     """.replace("$a_id$",song_id)
     return json.loads(graphQL_client.execute(query))['data']['songs'][0]['name']
+
+
+def get_song_id(song_name):
+    query="""
+    {
+        songs(where: {name: {_eq: "$a_id$"}}){
+            id
+        }
+    }
+    """.replace("$a_id$",song_name)
+    return json.loads(graphQL_client.execute(query))['data']['songs'][0]['id']

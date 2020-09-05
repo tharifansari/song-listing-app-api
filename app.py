@@ -44,18 +44,29 @@ def get_review():
             return all_rating, 400
         return json.dumps(all_rating), 200
     elif request.method == "POST":
-        data = request.json
+        data = json.loads(request.data)
+        
         # user_id song_id rating
         set_rating_status, msg = ratings.give_rating(data)
         if set_rating_status != True:
             return msg, 400
         return msg, 200
-    
+
+
+@app.route("/rating/<uid>/<sid>", methods=["GET"])
+def check_dup_rating(uid,sid):
+    if ratings.check_duplicate_rating(uid,sid):
+        return "True",200
+    return "False",200
 
 @app.route("/song", methods=["POST","GET"])
 def get_song():
     if request.method == "GET":
         top = request.args.get('top', default=-1, type=int)
+        get_song_id = request.args.get('s_id', default=False, type=bool)
+        if get_song_id != False:
+            data = json.loads(request.data)
+            return songs.get_song_id(data['song_name']), 200
         songs_status, all_songs = songs.get_all_songs()
         if songs_status != True:
             return all_songs, 400
