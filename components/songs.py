@@ -77,6 +77,7 @@ def add_song(data):
             }
         }
     """.replace("$id$",song_id).replace("$name$",data['name']).replace("$date$",str(data['date']))
+    print(query)
     result = json.loads(graphQL_client.execute(query))
     if "errors" not in result:
         artist_list = data['artist']
@@ -91,7 +92,7 @@ def add_song(data):
             artist_id_list.append(dc)
         query = song_artist_query()
         json.loads(graphQL_client.execute(query,{'rows':artist_id_list}))
-        return True, "Successfully added a song"
+        return True, song_id
         # add entry to song_artist table 
     return False, result['errors'][0]["message"]
 

@@ -83,7 +83,8 @@ def get_song():
             return json.dumps(top_song_list), 200
         return json.dumps(all_songs), 200
     elif request.method == "POST":
-        data = request.json
+        data = json.loads(request.data)
+        print(data)
         add_song_status, msg = songs.add_song(data)
         if add_song_status != True:
             return msg,400
