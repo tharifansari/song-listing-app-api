@@ -112,7 +112,8 @@ def get_artist():
             return json.dumps(top_artist_list), 200
         return json.dumps(all_artist), 200
     elif request.method == "POST":
-        data = request.json
+        data = json.loads(request.data)
+        print(data)
         add_song_status, msg = artist.add_artist(data)
         if add_song_status != True:
             return msg,400
