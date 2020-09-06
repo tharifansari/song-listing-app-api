@@ -38,6 +38,7 @@ def get_review():
     elif request.method == "POST":
         data = json.loads(request.data)
         set_rating_status, msg = ratings.give_rating(data)
+        print(msg)
         if set_rating_status != True:
             return msg, 400
         return msg, 200
@@ -67,9 +68,11 @@ def get_song():
             if top_status != True:
                 return top_songs, 400
             top_song_list = []
+            all_song_dc = {}
             for d in all_songs:
-                if d['id'] in top_songs:
-                    top_song_list.append(d)
+                all_song_dc[d['id']] = d
+            for ts in  top_songs:
+                top_song_list.append(all_song_dc[ts] )
             return json.dumps(top_song_list), 200
         return json.dumps(all_songs), 200
     elif request.method == "POST":

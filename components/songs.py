@@ -41,7 +41,9 @@ def top_songs(songs, top):
         rating_average = {}
         for song in rating_dict:
             rating_average[song] = np.mean(rating_dict[song])
+        print(rating_average)
         top_song_keys = nlargest(top, rating_average, key = rating_average.get) 
+        print(top_song_keys)
         return True, top_song_keys
     return False, all_ratings
 
