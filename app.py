@@ -17,27 +17,19 @@ def signup():
     if user_signup_status != True:
         return msg, 400
     return msg, 200
-    # session['userid'] = msg
-    # return "cool buddy {}".format(session['userid']), 200
 
 
 @app.route("/login", methods=["GET"])
 def user_login():
     data = json.loads(request.data)
-    # print(data)
     user_login_status, msg =  login.validate_login(data)
-    # print(user_login_status)
     if user_login_status != True:
         return msg, 400
     return msg['id'], 200
-    # print(msg)
-    # session['userid'] = msg['id']
-    # return "cool {} {}".format(msg['name'],session['userid']), 200
     
 
 @app.route("/rating", methods=["GET","POST"])
 def get_review():
-    # filter for songs and filter for artist
     if request.method == "GET":
         check_rating, all_rating = ratings.get_all_ratings()
         if check_rating!=True:
@@ -45,8 +37,6 @@ def get_review():
         return json.dumps(all_rating), 200
     elif request.method == "POST":
         data = json.loads(request.data)
-        
-        # user_id song_id rating
         set_rating_status, msg = ratings.give_rating(data)
         if set_rating_status != True:
             return msg, 400
@@ -89,7 +79,6 @@ def get_song():
         if add_song_status != True:
             return msg,400
         return msg,200
-    
 
 
 @app.route("/artist", methods=["POST","GET"])
@@ -119,6 +108,7 @@ def get_artist():
             return msg,400
         return msg,200
 
+
 @app.route("/artist/<song_id>", methods=["GET"])
 def artiist_for_id(song_id):
     artist_ls = artist.get_artist_song(song_id)
@@ -127,6 +117,7 @@ def artiist_for_id(song_id):
         artist_dc[artst] = artist.get_artist_name(artst)
     return json.dumps(artist_dc)
 
+
 @app.route("/song/<artist_id>",methods=["GET"])
 def songs_for_artist(artist_id):
     songs_ls = artist.get_song_artist(artist_id)
@@ -134,6 +125,7 @@ def songs_for_artist(artist_id):
     for sng in songs_ls:
         song_dc[sng] = songs.get_song_name(sng)
     return json.dumps(song_dc)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=PORT, debug=True)

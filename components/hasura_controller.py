@@ -11,5 +11,3 @@ class HasuraClient:
         self.graphql_client.inject_token(
             self.HASURA_GRAPHQL_ADMIN_SECRET, 'x-hasura-admin-secret'
         )
-
-# hasura_client = HasuraClient().graphql_client

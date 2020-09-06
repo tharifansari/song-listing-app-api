@@ -1,6 +1,6 @@
 FROM ubuntu
 
-RUN apt-get update && apt-get -y install python3-pip && apt-get -y install python3 && apt-get -y install gunicorn
+RUN apt-get update && apt-get -y install python3-pip && apt-get -y install pyth$
 
 
 WORKDIR /opt/app
@@ -11,6 +11,6 @@ RUN pip3 install -r requirements.txt
 
 COPY . .
 
-EXPOSE 5050
+EXPOSE 8050
 
-CMD gunicorn3 --workers=3 --threads=2 --bind=0.0.0.0:5050 app:app
+CMD gunicorn3 --workers=3 --threads=2 --bind=0.0.0.0:8050 app:app

@@ -8,7 +8,6 @@ import sys
 sys.path.append(".")
 
 graphQL_client = HasuraClient().graphql_client
-# graphQL_client = hasura_controller.HasuraClient().graphql_client
 
 
 def make_md5_hash(user_entered_password):
@@ -27,22 +26,16 @@ def get_userid_password(mail):
             }
         }
     """.replace("$mail$",str(mail))
-    user_details = json.loads(graphQL_client.execute(query))['data']['user']
-    
+    user_details = json.loads(graphQL_client.execute(query))['data']['user']    
     return user_details
 
 
 def validate_login(data):
-    # print(data)
     mail = data['mail']
     password = make_md5_hash(data['password'])
-
     userid_password = get_userid_password(mail)
-
-    # validate invalid email
     if userid_password == []:
         return False, "Email doesn't belong to a user"
-    
     user_password = userid_password[0]['password']
     user_details = {
         "id" : userid_password[0]['id'],
@@ -54,11 +47,9 @@ def validate_login(data):
     
 
 def sign_up(data):
-
     mail = data['mail']
     name = data['name']
     password = make_md5_hash(data['password'])
-    
     query = """
         {
             user(where: {email: {_eq: "$mail$"}}){
@@ -66,14 +57,10 @@ def sign_up(data):
             }
         }
     """.replace("$mail$",str(mail))
-
     check_user = json.loads(graphQL_client.execute(query))['data']['user']
-    
     if check_user != []:
         return False, "User already exist"
-    
     user_id = str(uuid.uuid4())
-    
     query = '''
         mutation MyMutation
         {
