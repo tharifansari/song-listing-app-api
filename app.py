@@ -89,6 +89,7 @@ def get_artist():
     if request.method == "GET":
         top = request.args.get('top', default=-1, type=int)
         artist_status, all_artist = artist.get_all_artist()
+        print(all_artist)
         if artist_status != True:
             return all_artist, 400
         if top!=-1 :
@@ -98,9 +99,11 @@ def get_artist():
             if top_status != True:
                 return top_songs, 400
             top_artist_list = []
+            all_artst_dc = {}
             for d in all_artist:
-                if d['id'] in top_songs:
-                    top_artist_list.append(d)
+                all_artst_dc[d['id']] = d
+            for ta in top_songs:
+                top_artist_list.append(all_artst_dc[ta])
             return json.dumps(top_artist_list), 200
         return json.dumps(all_artist), 200
     elif request.method == "POST":

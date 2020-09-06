@@ -119,7 +119,8 @@ def top_artist(songs, top):
         # print(rating_dict)
         rating_average = {}
         for artst in rating_dict:
-            rating_average[artst] = np.mean(rating_dict[artst])
+            if rating_dict[artst] != []:
+                rating_average[artst] = np.mean(rating_dict[artst])
         # print(rating_average)
         top_artist_keys = nlargest(top, rating_average, key = rating_average.get) 
         # print(top_artist_keys)
